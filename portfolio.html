@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Portfolio</title>
+    <style>
+        /* Base Reset and Font */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Body with gradient background */
+        body {
+            background: linear-gradient(135deg, #fff0f0 0%, #ffe6e6 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Container for content */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Animated Header */
+        header {
+            background: linear-gradient(to right, #662000 0%, #cc1800 100%);
+            color: #fff;
+            padding: 30px 0;
+            text-align: center;
+            border-bottom: 5px solid #afa04c;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            animation: pulse 15s infinite linear;
+        }
+
+        @keyframes pulse {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            position: relative;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Main Content Layout */
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin: 40px 0;
+            gap: 30px;
+        }
+
+        /* Bio Section with Floating Image */
+        .bio-section {
+            flex: 1;
+            min-width: 300px;
+            background: linear-gradient(to bottom right, #e6f2ff 0%, #ffffff 100%);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 51, 102, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .bio-section:hover {
+            transform: translateY(-5px);
+        }
+
+        .bio-section::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="%230066cc" opacity="0.1"><path d="M30,10 Q50,5 70,30 T90,70 Q95,50 70,30 T10,30 Q5,50 30,70 T30,10"/></svg>');
+            background-size: contain;
+            z-index: 0;
+        }
+
+        .bio-section h2 {
+            color: #cc0088;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #cc005f;
+            padding-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Profile Image with Animation */
+        .profile-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #4CAF50;
+            margin-right: 30px;
+            float: left;
+            shape-outside: circle();
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.5s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-image:hover {
+            transform: rotate(5deg) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        /* Hobbies Section with Animated List */
+        .hobbies-section {
+            flex: 1;
+            min-width: 300px;
+            background: linear-gradient(to bottom right, #f0fff0 0%, #ffffff 100%);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(34, 139, 34, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .hobbies-section:hover {
+            transform: translateY(-5px);
+        }
+
+        .hobbies-section h2 {
+            color: #8b2263;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #8b224a;
+            padding-bottom: 8px;
+        }
+
+        .hobbies-list {
+            list-style-type: none;
+        }
+
+        .hobbies-list li {
+            padding: 12px 0;
+            border-bottom: 1px dashed rgba(0,0,0,0.1);
+            position: relative;
+            padding-left: 35px;
+            transition: all 0.3s ease;
+        }
+
+        .hobbies-list li:hover {
+            transform: translateX(10px);
+            background-color: rgba(0,102,204,0.05);
+            border-radius: 5px;
+            padding-left: 40px;
+        }
+
+        .hobbies-list li::before {
+            content: "→";
+            color: #0066cc;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .hobbies-list li:hover::before {
+            transform: scale(1.5);
+            color: #228B22;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            width: 100%;
+            background: linear-gradient(to bottom right, #e6e6fa 0%, #ffffff 100%);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(128, 0, 128, 0.1);
+            margin-top: 30px;
+            transition: transform 0.3s ease;
+        }
+
+        .contact-section:hover {
+            transform: translateY(-5px);
+        }
+
+        .contact-section h2 {
+            color: #800080;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #800080;
+            padding-bottom: 8px;
+        }
+
+        /* Form Styling */
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background-color: rgba(255,255,255,0.8);
+        }
+
+        .form-group input:focus {
+            border-color: #0066cc;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0,102,204,0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Enhanced Button with Gradient and Animation */
+        .btn {
+            display: inline-block;
+            background: linear-gradient(45deg, #0066cc 0%, #004d99 100%);
+            color: white;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.4s ease;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(0,102,204,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            background: linear-gradient(45deg, #004d99 0%, #003366 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,102,204,0.4);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .btn:hover::after {
+            transform: translateX(100%);
+        }
+
+        /* Greeting Message with Animation */
+        #greeting-message {
+            margin-top: 25px;
+            padding: 20px;
+            background: linear-gradient(to right, #edd9d4 0%, #e8f5e9 100%);
+            color: #155724;
+            border-radius: 10px;
+            display: none;
+            border-left: 5px solid #85a728;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            animation: slideIn 0.5s ease-out forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #greeting-message::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, #a7283d 0%, #218838 100%);
+        }
+
+        /* Error Message Styling */
+        .error-message {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 8px;
+            display: none;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+
+        /* Footer with Gradient */
+        footer {
+            background: linear-gradient(to right, #660000 0%, #cc3000 100%);
+            color: #fff;
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 50px;
+            position: relative;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to right, #af4ca7 0%, #8b2271 100%);
+        }
+
+        footer p {
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        /* Clearfix */
+        .clearfix::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+           
+            .profile-image {
+                float: none;
+                display: block;
+                margin: 0 auto 25px;
+            }
+           
+            header h1 {
+                font-size: 2rem;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Header -->
+    <header>
+        <div class="container">
+            <h1>MUGABEKAZI Liliane</h1>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="main-content">
+            <!-- Bio Section -->
+            <section class="bio-section clearfix">
+                <h2>About Me</h2>
+                <img src="WhatsApp Image 2025-04-16 at 08.20.22.jpeg" alt="Profile Image" class="profile-image">
+                <p>
+                    Hi! I’m Liliane — a creative web developer who thrives on crafting seamless and engaging digital experiences. My expertise lies in front-end development, where I bring designs to life with clean, responsive code. I also enjoy exploring back-end tools to expand the functionality of my projects.
+
+                    Outside the screen, I recharge by hiking through nature trails and trying out inventive dishes in the kitchen. I'm always eager to learn something new, whether it’s a framework, a flavor, or a fresh perspective.
+                    
+                    Let’s build something meaningful together!
+                </p>
+                <a href=""></a>
+                <p>
+                    I believe in continuous learning and pushing boundaries to create digital experiences
+                    that are not just functional but also delightful. My approach combines technical skills
+                    with creative problem-solving to build solutions that make a difference.
+                </p>
+                <!-- Enhanced Button with Gradient -->
+                <button id="greet-btn" class="btn">Say Hello</button>
+                <!-- Animated Greeting Message -->
+                <div id="greeting-message"></div>
+            </section>
+
+            <!-- Hobbies Section -->
+            <section class="hobbies-section">
+                <h2>My Hobbies</h2>
+                <ul class="hobbies-list">
+                    <li>Rock Climbing - Love conquering new heights both physically and mentally</li>
+                    <li>Photography - Capturing moments and telling stories through images</li>
+                    <li>Open Source Contributions - Giving back to the developer community</li>
+                </ul>
+            </section>
+
+            <!-- Contact Section -->
+            <section class="contact-section">
+                <h2>Contact Me</h2>
+                <form id="contact-form">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" placeholder="Your name">
+                        <div id="name-error" class="error-message">Please enter your name</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" placeholder="Your email">
+                        <div id="email-error" class="error-message">Please enter a valid email</div>
+                    </div>
+                    <button type="submit" class="btn">Send Message</button>
+                </form>
+            </section>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 Mugabekazi Liliane. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Enhanced JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {  
+            // DOM Elements
+            const greetBtn = document.getElementById('greet-btn');
+            const greetingMessage = document.getElementById('greeting-message');
+            const contactForm = document.getElementById('contact-form');
+            const nameInput = document.getElementById('name');
+            const emailInput = document.getElementById('email');
+            const nameError = document.getElementById('name-error');
+            const emailError = document.getElementById('email-error');
+
+            // Say Hello Button Animation and Functionality
+            greetBtn.addEventListener('mouseenter', function() {
+                this.style.background = 'linear-gradient(45deg, #004d99 0%, #003366 100%)';
+                this.style.transform = 'translateY(-3px) scale(1.05)';
+            });
+
+            greetBtn.addEventListener('mouseleave', function() {
+                this.style.background = 'linear-gradient(45deg, #0066cc 0%, #004d99 100%)';
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+
+            greetBtn.addEventListener('click', function() {
+                // Add click effect
+                this.style.transform = 'translateY(1px) scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = 'translateY(-3px) scale(1.05)';
+                }, 100);
+               
+                // Display animated greeting
+                greetingMessage.innerHTML = `
+                    <h3>Hello !</h3>
+                    <p>Thanks for checking out my portfolio. Let's create something amazing together!</p>
+                    <div style="width: 100%; height: 3px; background: linear-gradient(to right, #28a745 0%, #218838 100%); margin-top: 10px;"></div>
+                `;
+                greetingMessage.style.display = 'block';
+               
+                // Hide after 5 seconds with fade out
+                setTimeout(function() {
+                    greetingMessage.style.opacity = '0';
+                    greetingMessage.style.transition = 'opacity 0.5s ease';
+                    setTimeout(() => {
+                        greetingMessage.style.display = 'none';
+                        greetingMessage.style.opacity = '1';
+                    }, 500);
+                }, 5000);
+            });
+
+            // Form Validation with Enhanced Feedback
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+               
+                // Reset errors
+                nameError.style.display = 'none';
+                emailError.style.display = 'none';
+                nameInput.style.borderColor = '#ddd';
+                emailInput.style.borderColor = '#ddd';
+               
+                let isValid = true;
+               
+                // Name validation
+                if (nameInput.value.trim() === '') {
+                    nameError.style.display = 'block';
+                    nameInput.style.borderColor = '#dc3545';
+                    nameInput.focus();
+                    isValid = false;
+                }
+               
+                // Email validation
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(emailInput.value.trim())) {
+                    emailError.style.display = 'block';
+                    emailInput.style.borderColor = '#dc3545';
+                    if (isValid) emailInput.focus();
+                    isValid = false;
+                }
+               
+                // Form submission feedback
+                if (isValid) {
+                    const submitBtn = this.querySelector('button[type="submit"]');
+                    submitBtn.textContent = 'Sending...';
+                    submitBtn.style.background = 'linear-gradient(45deg, #28a745 0%, #218838 100%)';
+                   
+                    // Simulate sending (in real app, this would be AJAX)
+                    setTimeout(() => {
+                        submitBtn.textContent = 'Message Sent!';
+                        submitBtn.style.background = 'linear-gradient(45deg, #218838 0%, #1e7e34 100%)';
+                       
+                        // Show success message
+                        const successDiv = document.createElement('div');
+                        successDiv.innerHTML = `
+                            <div style="margin-top: 20px; padding: 15px; background: linear-gradient(to right, #d4edda 0%, #e8f5e9 100%);
+                                color: #155724; border-radius: 5px; border-left: 5px solid #28a745; animation: fadeIn 0.5s ease-out;">
+                                <strong>Success!</strong> Thank you for your message. I'll get back to you soon.
+                            </div>
+                        `;
+                        this.appendChild(successDiv);
+                       
+                        // Reset form after 3 seconds
+                        setTimeout(() => {
+                            this.reset();
+                            submitBtn.textContent = 'Send Message';
+                            submitBtn.style.background = 'linear-gradient(45deg, #0066cc 0%, #004d99 100%)';
+                            successDiv.remove();
+                        }, 3000);
+                    }, 1500);
+                }
+            });
+
+            // Input field focus effects
+            [nameInput, emailInput].forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentNode.querySelector('label').style.color = '#0066cc';
+                    this.style.boxShadow = '0 0 0 3px rgba(0,102,204,0.3)';
+                });
+               
+                input.addEventListener('blur', function() {
+                    this.parentNode.querySelector('label').style.color = '#555';
+                    this.style.boxShadow = 'none';
+                });
+            });
+        });
+    </script>
+</body>
+</html>**
